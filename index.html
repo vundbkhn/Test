@@ -373,12 +373,35 @@ function rng(a){return()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t
 
 /* ---------- game ---------- */
 const cv=$('cv');let ctx=cv.getContext('2d',{alpha:false});const mainCtx=ctx;
-let RS=1,RSmax=1,emaI=16.7,lastRaw=0,okT=0,lastUp=-1e9,coolT=0,live=false,paused=false,vig,gPat,lPat,spk=[],TT=0,bots=[],dead=false,grace=0,totalPts=0,B,deco=[],CW=innerWidth,CH=innerHeight,DPR=1,lvl=1,objs=[],fx=[],hole=null,score,total,eaten,WS,theme,cam,sc,js=null,running=false,last=0,won=false,G=320,RW=70,combo=0;
+let slowT=0,RS=1,RSmax=1,emaI=16.7,lastRaw=0,okT=0,lastUp=-1e9,coolT=0,live=false,paused=false,vig,gPat,lPat,spk=[],TT=0,bots=[],dead=false,grace=0,totalPts=0,B,deco=[],CW=innerWidth,CH=innerHeight,DPR=1,lvl=1,objs=[],fx=[],hole=null,score,total,eaten,WS,theme,cam,sc,js=null,running=false,last=0,won=false,G=320,RW=70,combo=0;
 const GFX={ultra:{dmin:1.5,dmax:3,dfl:1,px:4.2e6,fps:120,sq:'high',q:3.2,tex:2,vig:.48,sp:12,spc:140,rings:5,bloom:1,light:1,shadow:2,detail:2,swirl:1,spr:1},
   normal:{dmin:1,dmax:2.5,dfl:.75,px:2.4e6,fps:60,sq:'medium',q:2.4,tex:2,vig:.42,sp:8,spc:70,rings:4,bloom:1,light:1,shadow:2,detail:2,swirl:1,spr:1},
   low:{dmin:1,dmax:1.5,dfl:.6,px:1.1e6,fps:60,sq:'low',q:1.6,tex:1,vig:0,sp:0,spc:0,rings:2,bloom:0,light:0,shadow:1,detail:1,swirl:0,spr:1}};
-let gm='normal';try{const v=localStorage.getItem('bh_gfx');if(GFX[v])gm=v}catch(e){}
-let cfg=GFX[gm];document.body.dataset.gfx=gm;
+/* ---------- nhận diện thiết bị & chọn đồ hoạ tự động ---------- */
+const DEV=(()=>{
+  const ua=navigator.userAgent||'',tp=navigator.maxTouchPoints||0;
+  const ipad=/iPad/.test(ua)||(navigator.platform==='MacIntel'&&tp>1);
+  const iphone=/iPhone|iPod/.test(ua),android=/Android/i.test(ua);
+  const sw=screen.width||innerWidth,sh=screen.height||innerHeight,mn=Math.min(sw,sh,innerWidth||1e4,innerHeight||1e4),mx=Math.max(sw,sh);
+  const touch=tp>0&&(matchMedia('(pointer:coarse)').matches||ipad||iphone||android);
+  const kind=iphone?'phone':ipad?'tablet':touch?(mn>=600?'tablet':'phone'):'desktop';
+  return{kind,ios:ipad||iphone,android,touch,dpr:devicePixelRatio||1,mn,mx,ar:mx/Math.max(1,Math.min(sw,sh)),
+    cores:navigator.hardwareConcurrency||4,mem:navigator.deviceMemory||0,
+    save:!!(navigator.connection&&navigator.connection.saveData),calm:matchMedia('(prefers-reduced-motion:reduce)').matches};
+})();
+function detectGfx(){
+  const d=DEV;let t;
+  if(d.save)return'low';
+  if(d.ios){t=(d.kind==='phone'&&d.mn<390)?'normal':'ultra'}      /* iPhone từ 393pt (iPhone 14+/16) và iPad mới: ultra */
+  else if(d.kind==='desktop'){t=d.cores>=8?'ultra':d.cores>=4?'normal':'low'}
+  else{const m=d.mem||(d.cores>=8?6:4);t=(m<=3||d.cores<=4)?'low':(m>=6&&d.cores>=8)?'ultra':'normal'}
+  if(d.calm&&t==='ultra')t='normal';
+  return t;
+}
+let gm='normal',gAuto=true;
+try{const v=localStorage.getItem('bh_gfx');if(GFX[v]){gm=v;gAuto=false}}catch(e){}
+if(gAuto)gm=detectGfx();
+let cfg=GFX[gm];document.body.dataset.gfx=gm;document.body.dataset.dev=DEV.kind;
 function getViewSize(){
   const r=cv.getBoundingClientRect();
   if(r.width>0&&r.height>0)return[r.width,r.height];
@@ -1611,6 +1634,7 @@ function govern(t){
   const raw=t-lastRaw;lastRaw=t;if(raw<=0||raw>250)return;
   emaI+=(Math.min(raw,100)-emaI)*.08;if(t<coolT)return;
   const tg=1000/Math.min(cfg.fps,60);
+  if(gAuto&&gm!=='low'&&emaI>tg*1.3&&RS<=.56){if((slowT+=raw)>3500){slowT=0;applyGfx(gm==='ultra'?'normal':'low',true);return}}else slowT=0;
   if(emaI>tg*1.3&&RS>.55){RS=Math.max(.55,RS*.88);if(t-lastUp<8000)RSmax=RS;coolT=t+1200;okT=0;emaI=tg;resize()}
   else if(emaI<tg*1.12&&RS<RSmax){okT+=raw;if(okT>5000){RS=Math.min(RSmax,RS*1.08);lastUp=t;okT=0;coolT=t+1200;resize()}}
   else okT=0}
@@ -1622,12 +1646,13 @@ function loop(t){if(!running)return;raf=requestAnimationFrame(loop);
   const dt=Math.min(Math.max(t-last,0)/1000,.05);last=t;TT=t/1000;if((++fr&63)===0)resize();update(dt);draw();
   if(won||dead){idle+=dt;if(idle>2.5){running=false;cancelAnimationFrame(raf)}}}
 const GN={ultra:['Siêu sắc nét 4K','Đồ hoạ 3D cao nhất: độ phân giải cao, bóng đổ, xoáy hố đen, ánh sáng và hiệu ứng, tối đa 120Hz. Tự giảm độ nét khi máy chậm.'],normal:['Bình thường','Cân bằng độ nét và độ mượt, 60Hz. Tự giảm độ nét khi máy chậm.'],low:['Dành cho máy yếu','Tiết kiệm pin: độ phân giải vừa phải, 60Hz, giảm hiệu ứng ánh sáng.']};
-function applyGfx(m){gm=m;cfg=GFX[m];document.body.dataset.gfx=m;try{localStorage.setItem('bh_gfx',m)}catch(e){}
+function applyGfx(m,auto){if(m==='auto'){auto=true;m=detectGfx()}gAuto=!!auto;gm=m;cfg=GFX[m];document.body.dataset.gfx=m;RS=1;RSmax=1;try{if(gAuto)localStorage.removeItem('bh_gfx');else localStorage.setItem('bh_gfx',m)}catch(e){}
   skinCache.length=0;for(const k in botSpr)delete botSpr[k];resize();
   if(B&&theme){gPat=mkPat(B.g||theme[0]);lPat=mkPat(B.lane||theme[1])}
   if(!running&&hole&&B&&$('game').classList.contains('on')){try{draw()}catch(e){}}
   if(!running&&nextT>=0)nextT=0}
-function drawGl(){$('gl').innerHTML='';for(const k of['ultra','normal','low']){const b=document.createElement('button');b.className='go'+(k===gm?' on':'');b.innerHTML='<b>'+GN[k][0]+'</b><span>'+GN[k][1]+'</span>';tap(b,()=>{applyGfx(k);drawGl()});$('gl').appendChild(b)}}
+function drawGl(){$('gl').innerHTML='';{const b=document.createElement('button');b.className='go'+(gAuto?' on':'');b.innerHTML='<b>✨ Tự động (khuyên dùng)</b><span>Nhận diện thiết bị và chọn độ nét phù hợp, tự hạ khi máy chậm. Đang dùng: '+GN[gm][0]+'</span>';tap(b,()=>{applyGfx('auto');drawGl()});$('gl').appendChild(b)}
+  for(const k of['ultra','normal','low']){const b=document.createElement('button');b.className='go'+(!gAuto&&k===gm?' on':'');b.innerHTML='<b>'+GN[k][0]+'</b><span>'+GN[k][1]+'</span>';tap(b,()=>{applyGfx(k);drawGl()});$('gl').appendChild(b)}}
 let wasRun=false;
 function openSet(){wasRun=running;if(running){running=false;cancelAnimationFrame(raf)}drawGl();$('set').classList.add('on')}
 function closeSet(){$('set').classList.remove('on');if(wasRun&&$('game').classList.contains('on'))startLoop();wasRun=false}
