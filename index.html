@@ -89,9 +89,14 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-acti
 .go span{font-size:13px;opacity:.75;line-height:1.35;display:block}
 .go.on{border-color:#8a5cff;background:#3b1d7a;box-shadow:0 0 0 3px rgba(138,92,255,.3)}
 
-#bkw{margin-top:6px;padding-top:10px;border-top:1.5px solid #4b3a78}
-#bkw h3{margin:0 0 4px;font-size:18px;text-align:center}
-#verw{margin-top:6px;padding-top:10px;border-top:1.5px solid #4b3a78}#verw h3{margin:0 0 4px;font-size:18px;text-align:center}#vers{margin-bottom:10px}
+#stabs{display:flex;gap:6px;margin-bottom:12px;background:#160a30;border-radius:14px;padding:4px}
+#stabs button{flex:1;border:0;border-radius:11px;padding:9px 4px;background:transparent;color:#b9a8e6;font:700 13px inherit;font-family:inherit;cursor:pointer;touch-action:manipulation}
+#stabs button.on{background:#7746f5;color:#fff;box-shadow:0 2px 8px rgba(120,70,240,.45)}
+#set .sp{display:none}#set .sp.on{display:block}
+.row2{display:flex;gap:8px}.row2 .go{flex:1;margin:0;text-align:center}.row2 .go b{margin:0;font-size:15px}
+#vnum{text-align:center;font:800 28px/1.2 ui-monospace,Menlo,monospace;color:#ffe27a;margin:4px 0 6px}
+#gl .go{padding:9px 12px;margin-bottom:8px}#gl .go b{font-size:15px;margin-bottom:2px}#gl .go span{font-size:12px;line-height:1.3}
+#vers{margin-bottom:10px}
 #bkt{display:block;width:100%;margin:0 0 10px;padding:12px;border-radius:14px;border:2px solid #4b3a78;background:#160a30;color:#ffe27a;font:700 30px/1.2 ui-monospace,Menlo,monospace;letter-spacing:6px;text-align:center;text-transform:uppercase;user-select:text;-webkit-user-select:text;outline:none}#bkt::placeholder{font-size:16px;letter-spacing:1px;color:#7d6fa8;font-weight:400}
 #bkt:focus{border-color:#8a5cff}
 #bkm{min-height:18px;text-align:center;font-size:13px;font-weight:700;margin:-2px 0 10px;color:#9be7ff}
@@ -141,7 +146,7 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-acti
 #hud{padding:calc(var(--st) + 8px) max(18px,calc(var(--sr) + 12px)) 0 max(18px,calc(var(--sl) + 12px));gap:9px}
 #set .box{max-width:min(820px,92vw)}#set h2{margin-bottom:10px}
 #gl{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:8px}
-#gl .go{margin:0;height:100%;display:flex;flex-direction:column;justify-content:flex-start}
+#gl .go{margin:0;height:100%;display:flex;flex-direction:column;justify-content:flex-start}#set .box{max-width:min(620px,92vw)}
 #skm .box{max-width:min(860px,94vw)}#sg{grid-template-columns:repeat(7,1fr);gap:8px;margin-bottom:8px}
 #sx,#skx{width:280px;max-width:75%;margin:0 auto}
 #wc{max-width:720px;flex-direction:row;gap:22px;align-items:center}
@@ -184,13 +189,15 @@ body[data-gfx=low] #win.w #wi{filter:none}
 <div class="sract"><button class="btn" id="srgo">📍 Đi tới trên bản đồ</button><button class="btn alt" id="srplay">▶ Chơi ngay</button></div>
 <div class="mfoot"><button class="btn alt" id="srx">Đóng</button></div></div></div>
 <div id="skm"><div class="box"><h2>🎨 Quản lý Skin Hố Đen</h2><div class="sub">Chọn 1 trong 33 skin 3D để dùng cố định, hoặc bật ngẫu nhiên mỗi màn</div><div id="skst"></div><div id="sg"></div><div class="mfoot"><button class="btn" id="skx">Đóng</button></div></div></div>
-<div id="set"><div class="box"><h2>⚙ Cài đặt đồ hoạ</h2><div class="sub">Chọn chế độ phù hợp với máy của bạn</div><div id="gl"></div>
-<div id="bkw"><h3>💾 Sao lưu &amp; khôi phục</h3><div class="sub">Tạo mã 6 ký tự lưu tiến độ, skin và đồ hoạ. Sau khi cài lại game, nhập mã này để chơi tiếp.</div>
+<div id="set"><div class="box"><h2>⚙ Cài đặt</h2>
+<div id="stabs"><button data-t="g" class="on">🎨 Đồ hoạ</button><button data-t="b">💾 Sao lưu</button><button data-t="v">🔖 Phiên bản</button></div>
+<div class="sp on" id="sp-g"><div id="gl"></div></div>
+<div class="sp" id="sp-b"><div class="sub">Mã 6 ký tự lưu tiến độ, skin và đồ hoạ. Cài lại game, nhập mã để chơi tiếp.</div>
 <input id="bkt" type="text" placeholder="MÃ 6 KÝ TỰ" maxlength="90" autocomplete="off" autocapitalize="characters" autocorrect="off" spellcheck="false">
 <div id="bkm"></div>
-<button class="go" id="bkb"><b>📤 Tạo mã sao lưu</b><span>Mã đổi theo tiến độ, hãy tạo lại sau khi chơi thêm. Ghi mã vào Ghi chú để giữ.</span></button>
-<button class="go" id="bkr"><b>📥 Khôi phục từ mã</b><span>Nhập mã vào ô phía trên rồi bấm. Tiến độ hiện tại sẽ bị thay thế.</span></button></div>
-<div id="verw"><h3>🔖 Phiên bản</h3><div id="vers" class="sub">Đang kiểm tra…</div><button class="go" id="verb"><b>🔄 Cập nhật lên bản mới nhất</b><span>Xoá bộ nhớ đệm cũ và tải lại game. Tiến độ chơi không bị mất.</span></button></div>
+<div class="row2"><button class="go" id="bkb"><b>📤 Tạo mã</b></button><button class="go" id="bkr"><b>📥 Khôi phục</b></button></div></div>
+<div class="sp" id="sp-v"><div id="vnum"></div><div id="vers" class="sub">Đang kiểm tra…</div>
+<button class="go" id="verb"><b>🔄 Cập nhật lên bản mới nhất</b><span>Xoá bộ nhớ đệm cũ và tải lại game. Tiến độ chơi không bị mất.</span></button></div>
 <div class="mfoot"><button class="btn" id="sx">Đóng</button></div></div></div>
 <script type="text/plain" id="main">
 const $=id=>document.getElementById(id);
@@ -367,7 +374,7 @@ function wakeAudio(e){
 }
 ['touchend','pointerup','click','keydown'].forEach(ev=>document.addEventListener(ev,wakeAudio,{passive:true,capture:true}));
 function tap(el,fn,silent){
-  let id=null,sx=0,sy=0,lf=-1e9;
+  let id=null,sx=0,sy=0,lf=-1e9,pu=0;
   const go=e=>{
     wakeAudio(e);
     const t=performance.now();if(t-lf<420)return;lf=t;
@@ -375,9 +382,9 @@ function tap(el,fn,silent){
     fn(e);
   };
   el.addEventListener('pointerdown',e=>{id=e.pointerId;sx=e.clientX;sy=e.clientY});
-  el.addEventListener('pointerup',e=>{if(id!==e.pointerId)return;id=null;if(Math.hypot(e.clientX-sx,e.clientY-sy)<14)go(e)});
+  el.addEventListener('pointerup',e=>{if(id!==e.pointerId)return;id=null;if(Math.hypot(e.clientX-sx,e.clientY-sy)<14){pu=performance.now();go(e)}});
   el.addEventListener('pointercancel',()=>{id=null});
-  el.addEventListener('click',e=>go(e));
+  el.addEventListener('click',e=>{if(pu&&performance.now()-pu<3000){pu=0;return}go(e)});
 }
 tap($('mm'),toggleMusic,true);tap($('gm'),toggleMusic,true);
 syncMusicBtns();
@@ -679,14 +686,20 @@ function beltVel(x,y){
   return null;
 }
 /* ---------- sinh vật thể theo quy tắc điểm mới ---------- */
+const MAP_DENS=.16,GAP=16;
+let clears=[];
+/* vật to: dọn đường dưới chân vật (vẽ nền đè lên đường) và gỡ vách mê cung chạm vật */
+function addClear(o){
+  if(!B.free)clears.push({x0:o.x-o.w-26,y0:o.y-o.h-26,x1:o.x+o.w+26,y1:o.y+o.h+26});
+  if(B.mech==='maze')walls=walls.filter(w=>!(w.x1>o.x-o.w-16&&w.x0<o.x+o.w+16&&w.y1>o.y-o.h-16&&w.y0<o.y+o.h+16))}
 const objR=p=>Math.max(5,3.2*Math.sqrt(p));
-const tierOf=p=>p<=1?0:p<=10?1:p<=50?2:p<=200?3:4,TIER_TYPES=[[0,1,2],[3,4,5],[6,7],[7,8],[8,9]];
-/* 30% = 1đ, 20% = 10đ, 15% = 50đ, 15% = 200đ, 20% còn lại ngẫu nhiên 250-5000đ */
-function genPts(n,r){const q=[.3,.2,.15,.15],v=[1,10,50,200],a=[];
-  for(let k=0;k<4;k++){const m=Math.round(n*q[k]);for(let j=0;j<m&&a.length<n;j++)a.push(v[k])}
+const tierOf=p=>p<=1?0:p<=5?1:p<=10?2:p<=50?3:p<=200?4:5,TIER_TYPES=[[0,1,2],[1,2,3],[4,5],[6,7],[7,8],[8,9]];
+/* 20% = 1đ, 10% = 2đ, 10% = 5đ, 10% = 10đ, 15% = 50đ, 15% = 200đ, 20% còn lại ngẫu nhiên 250-5000đ */
+function genPts(n,r){const q=[.2,.1,.1,.1,.15,.15],v=[1,2,5,10,50,200],a=[];
+  for(let k=0;k<6;k++){const m=Math.round(n*q[k]);for(let j=0;j<m&&a.length<n;j++)a.push(v[k])}
   while(a.length<n)a.push(250+Math.floor(r()*4751));
   return a}
-function placeTry(p,r,L,ax,ay,am,tries){
+function placeTry(p,r,L,ax,ay,am,tries,kw){
   const nl=Math.floor(WS/G),dR=v=>{const m=v%G;return Math.min(m,G-m)};
   const tl=TIER_TYPES[tierOf(p)],i=tl[(r()*tl.length)|0],t=T[i],rr=objR(p)*(.92+r()*.16),big=rr>60;
   const sp=B.all||(B.sh&&B.sh[i])||t[4];
@@ -703,14 +716,15 @@ function placeTry(p,r,L,ax,ay,am,tries){
     else{x=60+r()*(WS-120);y=60+r()*(WS-120);
       if(i>=3&&!big&&!B.free){const m=RW/2+Math.max(hw,hh)+4;if(dR(x)<m||dR(y)<m)continue}}
     if(sp==='c')hw=hh=Math.max(hw,hh);
+    const hz0=t[5]*rr/t[0];
     if(Math.hypot(x-ax,y-ay)<am+(big?rr:0))continue;
-    if(B.mech==='maze'){const pd=big?20:Math.max(hw,hh)+12;let hit=false;for(const wl of walls)if(x+pd>wl.x0&&x-pd<wl.x1&&y+pd>wl.y0&&y-pd<wl.y1){hit=true;break}if(hit)continue}
-    let ok=true;for(const o of L)if(o.f<1&&Math.abs(o.x-x)<o.w+hw+2&&Math.abs(o.y-y)<o.h+hh+2){ok=false;break}
+    if(B.mech==='maze'){const pd=(big&&!kw)?20:Math.max(hw,hh)+12;let hit=false;for(const wl of walls)if(x+pd>wl.x0&&x-pd<wl.x1&&y+pd>wl.y0&&y-pd<wl.y1){hit=true;break}if(hit)continue}
+    let ok=true;for(const o of L)if(o.f<1&&Math.abs(o.x-x)<o.w+hw+GAP&&Math.abs(o.y-y)<o.h+hh+GAP+(o.hz+hz0)*.5){ok=false;break}
     if(!ok)continue;
-    return{x,y,w:hw,h:hh,need:t[1],pts:p,c,d:shade(c,.6),sh:sp,hz:t[5]*rr/t[0],f:-1,i,vx:0,vy:0,ms:(!big&&B.mv&&B.mv[i])?B.mv[i]*(.7+r()*.6):0,tm:r()*3,ln:(i===5||i===6)&&!B.free}}
+    return{x,y,w:hw,h:hh,need:t[1],pts:p,c,d:shade(c,.6),sh:sp,hz:hz0,f:-1,i,vx:0,vy:0,ms:(!big&&B.mv&&B.mv[i])?B.mv[i]*(.7+r()*.6):0,tm:r()*3,ln:(i===5||i===6)&&!B.free,big}}
   return null}
 function gen(n){
-  B=bio(n);RW=B.LW||70;const d=Math.min(n,300),r=rng(n*7919+13);const PL=genPts(MAX_ENT-1-3,r);let ar=0;for(const p of PL){const q=objR(p)*1.02;ar+=Math.PI*q*q}WS=Math.max(1300+d*10,Math.ceil(Math.sqrt(ar/.25)/10)*10);theme=THEMES[((n-1)/35|0)%5];
+  B=bio(n);RW=B.LW||70;const d=Math.min(n,300),r=rng(n*7919+13);const PL=genPts(MAX_ENT-1-3,r);let ar=0;for(const p of PL){const q=objR(p)*1.02;ar+=Math.PI*q*q}WS=Math.max(1300+d*10,Math.ceil(Math.sqrt(ar/MAP_DENS)/10)*10);theme=THEMES[((n-1)/35|0)%5];
   const L=[];
   const dR=v=>{const m=v%G;return Math.min(m,G-m)},nl=Math.floor(WS/G);
   let hx=G*(nl>>1),hy=G*(nl>>1);
@@ -753,6 +767,7 @@ function gen(n){
     for(const p0 of ord){let p=p0,o=null;
       for(let a=0;a<4&&!o;a++){o=placeTry(p,r,L,hx,hy,90,45);if(!o)p=Math.max(1,Math.round(p*.5))}
       if(o)L.push(o)}}
+  clears=[];for(const o of L)if(o.big)addClear(o);
   L.sort((a,b)=>a.pts-b.pts);let S=START_PTS;
   for(const o of L){if(o.pts>=S)o.pts=Math.max(1,S-1);S+=o.pts}
   const keep=L;
@@ -916,9 +931,10 @@ function respawnObjs(){
   const n=MAX_ENT-1-aliveBots()-occ;if(n<=0)return;
   const PL=genPts(n,Math.random).sort((x,y)=>y-x),add=[],all=objs.filter(o=>o.f<1);
   for(const p0 of PL){let p=p0,o=null;
-    for(let a=0;a<4&&!o;a++){o=placeTry(p,Math.random,all,hole.x,hole.y,hole.R+60,30);if(!o)p=Math.max(1,Math.round(p*.5))}
+    for(let a=0;a<4&&!o;a++){o=placeTry(p,Math.random,all,hole.x,hole.y,hole.R+60,30,true);if(!o)p=Math.max(1,Math.round(p*.5))}
     if(o){all.push(o);add.push(o)}}
   if(!add.length)return;
+  for(const o of add)if(o.big)addClear(o);
   initMove(add);objs=all.concat(add);objs.sort((x,y)=>x.y-y.y);
   total+=add.length;for(const o of add)totalPts+=o.pts;
   refreshCaps();setProg();showHint('✨ Vật thể mới xuất hiện trên map!',2000)}
@@ -2734,6 +2750,8 @@ function draw(){
       for(let k=kx0;k<=kx1;k++){ctx.moveTo(k*G,da);ctx.lineTo(k*G,yb)}
       for(let k=ky0;k<=ky1;k++){ctx.moveTo(dxa,k*G);ctx.lineTo(xb,k*G)}
       ctx.stroke();ctx.setLineDash([])}}
+  if(clears.length){ctx.fillStyle=gPat;for(const q of clears){if(q.x1<cam.x-vx||q.x0>cam.x+vx||q.y1<cam.y-vy||q.y0>cam.y+vy)continue;
+    ctx.beginPath();if(ctx.roundRect)ctx.roundRect(q.x0,q.y0,q.x1-q.x0,q.y1-q.y0,34);else ctx.rect(q.x0,q.y0,q.x1-q.x0,q.y1-q.y0);ctx.fill()}}
   ctx.strokeStyle='rgba(0,0,0,.35)';ctx.lineWidth=26;ctx.strokeRect(0,0,WS,WS);ctx.strokeStyle='rgba(255,255,255,.55)';ctx.lineWidth=5;ctx.strokeRect(0,0,WS,WS);
   const vw=CW/sc/2+90,vh=CH/sc/2+90,vis=o=>Math.abs(o.x-cam.x)<vw+o.w&&Math.abs(o.y-cam.y)<vh+o.h+o.hz;
   for(const o of objs)if(o.f>=0&&o.f<1&&vis(o))drawObj(o,1-o.f);
@@ -2815,7 +2833,9 @@ async function forceUpdate(){
   try{if(window.caches){for(const k of await caches.keys())await caches.delete(k)}}catch(e){}
   try{sessionStorage.removeItem('bh_upd')}catch(e){}
   location.replace(location.pathname+'?u='+Date.now())}
-function openSet(){wasRun=running;if(running){running=false;cancelAnimationFrame(raf)}drawGl();showVer();$('set').classList.add('on')}
+function setTab(t){document.querySelectorAll('#stabs button').forEach(b=>b.classList.toggle('on',b.dataset.t===t));document.querySelectorAll('#set .sp').forEach(p=>p.classList.toggle('on',p.id==='sp-'+t))}
+document.querySelectorAll('#stabs button').forEach(b=>tap(b,()=>setTab(b.dataset.t),true));
+function openSet(){wasRun=running;if(running){running=false;cancelAnimationFrame(raf)}setTab('g');drawGl();showVer();$('vnum').textContent='bh-'+APP_VER;$('set').classList.add('on')}
 function closeSet(){$('set').classList.remove('on');if(wasRun&&$('game').classList.contains('on'))startLoop();wasRun=false}
 
 /* ---------- giao diện quản lý 20 skin hố đen ---------- */
@@ -2920,20 +2940,24 @@ tap($('verb'),forceUpdate);tap($('st'),openSet);tap($('gs'),openSet);tap($('sx')
     const c=encode();box.value=c;
     copy(c).then(ok=>say(ok?'✅ Đã sao chép mã. Hãy ghi lại hoặc dán vào Ghi chú!':'Hãy ghi lại mã này để dùng khi khôi phục.',ok?'ok':''));
   });
+  let pend=null,pendT=0;
+  const resetR=()=>{pend=null;clearTimeout(pendT);$('bkr').firstChild.textContent='📥 Khôi phục'};
   tap($('bkr'),async()=>{
+    if(pend){const d=pend;resetR();
+      try{localStorage.setItem('bh_done',d.d);localStorage.setItem('bh_lb',d.l);localStorage.setItem('bh_skin',d.s<0?'':d.s);
+        if(d.g)localStorage.setItem('bh_gfx',d.g);else localStorage.removeItem('bh_gfx')}
+      catch(e){say('❌ Không ghi được dữ liệu trên thiết bị này.','err');return}
+      say('✅ Khôi phục thành công! Đang tải lại...','ok');setTimeout(()=>location.reload(),700);return}
     let t=box.value.trim();
     if(!t&&navigator.clipboard&&navigator.clipboard.readText){try{t=(await navigator.clipboard.readText()).trim();box.value=t}catch(e){}}
     if(!t){say('Hãy nhập mã sao lưu vào ô phía trên rồi bấm lại.','err');return}
     let d;try{d=/BH1-/i.test(t)?legacy(t):decode(t)}catch(e){say('❌ Mã không hợp lệ. Hãy kiểm tra lại từng ký tự.','err');return}
     const rs=d.s<0?'ngẫu nhiên':'skin '+(d.s+1)+' ('+SK[d.s][0]+')';
-    if(!confirm('Khôi phục: đã qua '+d.d+' màn, '+rs+'.\nTiến độ hiện tại ('+done+' màn) sẽ bị thay thế. Tiếp tục?'))return;
-    try{localStorage.setItem('bh_done',d.d);localStorage.setItem('bh_lb',d.l);localStorage.setItem('bh_skin',d.s<0?'':d.s);
-      if(d.g)localStorage.setItem('bh_gfx',d.g);else localStorage.removeItem('bh_gfx')}
-    catch(e){say('❌ Không ghi được dữ liệu trên thiết bị này.','err');return}
-    say('✅ Khôi phục thành công! Đang tải lại...','ok');setTimeout(()=>location.reload(),700);
+    pend=d;say('Mã hợp lệ: đã qua '+d.d+' màn, '+rs+'. Tiến độ hiện tại ('+done+' màn) sẽ bị thay thế. Bấm "Xác nhận" để tiếp tục.','');
+    $('bkr').firstChild.textContent='✔ Xác nhận';clearTimeout(pendT);pendT=setTimeout(()=>{resetR();say('')},10000);
   });
-  box.addEventListener('input',()=>say(''));
-  $('sx').addEventListener('click',()=>say(''));
+  box.addEventListener('input',()=>{say('');if(pend)resetR()});
+  $('sx').addEventListener('click',()=>{say('');if(pend)resetR()});
 })();
 
 
